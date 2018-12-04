@@ -9,9 +9,4 @@ public class Constants {
     public static final String NETWORK_ERROR_MESSAGE = "No Internet Connection! Sure wi-fi or cellular data is turned on, then try again.";
     public static final String ERROR_MESSAGE_HEADER = "Error-Message";
 
-    /**
-     * Bundle Keys
-     */
-    public static final String USER_DETAIL_DATA = "UserDetailData";
-
 }

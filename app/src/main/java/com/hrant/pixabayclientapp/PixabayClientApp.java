@@ -2,17 +2,17 @@ package com.hrant.pixabayclientapp;
 
 import android.app.Application;
 
-import com.hrant.pixabayclientapp.shared.di.components.DaggerIUserComponent;
-import com.hrant.pixabayclientapp.shared.di.components.IUserComponent;
+import com.hrant.pixabayclientapp.shared.di.components.DaggerIMainComponent;
+import com.hrant.pixabayclientapp.shared.di.components.IMainComponent;
 import com.hrant.pixabayclientapp.shared.di.components.root.DaggerIAppComponent;
 import com.hrant.pixabayclientapp.shared.di.components.root.IAppComponent;
 import com.hrant.pixabayclientapp.shared.di.modules.root.AppModule;
 import com.hrant.pixabayclientapp.shared.di.modules.root.NetModule;
-import com.hrant.pixabayclientapp.shared.di.modules.root.UserModule;
+import com.hrant.pixabayclientapp.shared.di.modules.root.MainModule;
 
 public class PixabayClientApp extends Application {
     private IAppComponent mAppComponent;
-    private IUserComponent mUserComponent;
+    private IMainComponent mMainComponent;
     private static PixabayClientApp mInstance;
 
     @Override
@@ -30,15 +30,15 @@ public class PixabayClientApp extends Application {
         return mInstance;
     }
 
-    public IUserComponent getUserComponent() {
-        mUserComponent = DaggerIUserComponent.builder()
+    public IMainComponent getMainComponent() {
+        mMainComponent = DaggerIMainComponent.builder()
                 .iAppComponent(mAppComponent)
-                .userModule(new UserModule())
+                .mainModule(new MainModule())
                 .build();
-        return mUserComponent;
+        return mMainComponent;
     }
 
-    public void releaseUserComponent() {
-        mUserComponent = null;
+    public void releaseMainComponent() {
+        mMainComponent = null;
     }
 }

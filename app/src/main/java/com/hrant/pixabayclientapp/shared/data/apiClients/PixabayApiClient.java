@@ -14,9 +14,17 @@ public class PixabayApiClient {
         mClient = client;
     }
 
-    public void getImagesList(AsyncHttpResponseHandler responseHandler) {
+    public void getImagesList(int pageNo, int pageItemsCount, String searchString, AsyncHttpResponseHandler responseHandler) {
         RequestParams requestParams = new RequestParams();
         requestParams.put("key", KEY);
+        requestParams.put("image_type", "photo");
+        requestParams.put("q", searchString);
+        requestParams.put("page", pageNo);
+        requestParams.put("per_page", pageItemsCount);
         mClient.get(BASE_URL, requestParams, responseHandler);
+    }
+
+    public void cancelRequests() {
+        mClient.cancelAllRequests(true);
     }
 }
