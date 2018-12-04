@@ -10,5 +10,7 @@ public interface IMainView extends IBaseView {
 
     void updateImagesList(List<PixabayImageModel> hits, int pagesCount);
 
+    void showEmptyState();
+
     void hideLoading();
 }

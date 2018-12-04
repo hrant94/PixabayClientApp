@@ -12,9 +12,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.hrant.pixabayclientapp.view.activities.imagePreviewActivity.ImagePreviewActivity;
 import com.hrant.pixabayclientapp.R;
 import com.hrant.pixabayclientapp.model.PixabayImageModel;
+import com.hrant.pixabayclientapp.view.activities.imagePreviewActivity.ImagePreviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +79,11 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
     public void addImagesList(List<PixabayImageModel> images) {
         if (mList.get(mList.size() - 1) == null) {
-            notifyItemRemoved(mList.size()-1);
+            notifyItemRemoved(mList.size() - 1);
             mList.remove(mList.size() - 1);
         }
         mList.addAll(images);
-        notifyItemRangeInserted(mList.size() - images.size(), images.size()-1);
+        notifyItemRangeInserted(mList.size() - images.size(), images.size() - 1);
     }
 
     public void updateImagesList(List<PixabayImageModel> images) {

@@ -1,4 +1,4 @@
-package com.hrant.pixabayclientapp.shared.di.modules.root;
+package com.hrant.pixabayclientapp.shared.di.modules;
 
 import com.hrant.pixabayclientapp.shared.data.apiClients.PixabayApiClient;
 import com.hrant.pixabayclientapp.shared.di.scopes.MainScope;

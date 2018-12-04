@@ -13,13 +13,12 @@ import java.io.UnsupportedEncodingException;
 import javax.inject.Inject;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.client.HttpResponseException;
 
 public class MainPresenter extends BasePresenter<IMainView> {
     private PixabayApiClient mApiClient;
 
     @Inject
-    public MainPresenter(PixabayApiClient mApiClient) {
+    MainPresenter(PixabayApiClient mApiClient) {
         this.mApiClient = mApiClient;
     }
 
@@ -41,7 +40,10 @@ public class MainPresenter extends BasePresenter<IMainView> {
                         response.getHits().add(null);
 
                     if (pageNo == 1) {
-                        mView.updateImagesList(response.getHits(), pagesCount);
+                        if (response.getHits().size() > 0)
+                            mView.updateImagesList(response.getHits(), pagesCount);
+                        else
+                            mView.showEmptyState();
                         mView.hideLoading();
                     } else
                         mView.addToImagesList(response.getHits());

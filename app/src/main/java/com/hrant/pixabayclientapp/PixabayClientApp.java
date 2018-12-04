@@ -8,7 +8,7 @@ import com.hrant.pixabayclientapp.shared.di.components.root.DaggerIAppComponent;
 import com.hrant.pixabayclientapp.shared.di.components.root.IAppComponent;
 import com.hrant.pixabayclientapp.shared.di.modules.root.AppModule;
 import com.hrant.pixabayclientapp.shared.di.modules.root.NetModule;
-import com.hrant.pixabayclientapp.shared.di.modules.root.MainModule;
+import com.hrant.pixabayclientapp.shared.di.modules.MainModule;
 
 public class PixabayClientApp extends Application {
     private IAppComponent mAppComponent;

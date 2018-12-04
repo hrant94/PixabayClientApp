@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hrant.pixabayclientapp.PixabayClientApp;
 import com.hrant.pixabayclientapp.R;
@@ -32,6 +33,7 @@ public class MainActivity extends BaseActivity implements IMainView {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private ImagesAdapter mAdapter;
+    private TextView mEmptyStateTextView;
     private int mPageNo = 1;
     private int mPagesCount;
     private int mPageItemsCount = 45;
@@ -52,12 +54,17 @@ public class MainActivity extends BaseActivity implements IMainView {
 
     private void initViews() {
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mRecyclerView = findViewById(R.id.recycler_view);
+        ImageView searchCancel = findViewById(R.id.search_cancel);
+        EditText searchEditText = findViewById(R.id.search_edit_text);
+        mEmptyStateTextView = findViewById(R.id.empty_state_text);
+
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mPageNo = 1;
             mPresenter.getImageList(mPageNo, mPageItemsCount, mSearchString);
         });
         mSwipeRefreshLayout.setRefreshing(true);
-        mRecyclerView = findViewById(R.id.recycler_view);
+
         int spacingSize = getResources().getDimensionPixelSize(R.dimen.spacing);
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(3, spacingSize, false));
         mAdapter = new ImagesAdapter(this);
@@ -90,8 +97,6 @@ public class MainActivity extends BaseActivity implements IMainView {
             }
         });
 
-        ImageView searchCancel = findViewById(R.id.search_cancel);
-        EditText searchEditText = findViewById(R.id.search_edit_text);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -113,6 +118,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         });
         searchEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mRecyclerView.smoothScrollToPosition(0);
                 mSwipeRefreshLayout.setRefreshing(true);
                 mSearchString = searchEditText.getText().toString().trim().replace(" ", "+");
                 mPageNo = 1;
@@ -121,6 +127,7 @@ public class MainActivity extends BaseActivity implements IMainView {
             }
             return false;
         });
+
         searchCancel.setOnClickListener(view -> searchEditText.setText(""));
     }
 
@@ -133,6 +140,16 @@ public class MainActivity extends BaseActivity implements IMainView {
     public void updateImagesList(List<PixabayImageModel> hits, int pagesCount) {
         mPagesCount = pagesCount;
         mAdapter.updateImagesList(hits);
+        if (mEmptyStateTextView.getVisibility() == View.VISIBLE)
+            mEmptyStateTextView.setVisibility(View.GONE);
+        if (mRecyclerView.getVisibility() == View.GONE)
+            mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showEmptyState() {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyStateTextView.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -23,6 +24,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.hrant.pixabayclientapp.R;
 import com.hrant.pixabayclientapp.shared.configurations.Constants;
 import com.hrant.pixabayclientapp.view.activities.BaseActivity;
@@ -36,13 +38,15 @@ public class ImagePreviewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         mImageUrl = getIntent().getStringExtra("imageUrl");
         mDownloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         initViews();
     }
 
     private void initViews() {
-        ImageView previewImageView = findViewById(R.id.image_preview_image_view);
+        PhotoView previewImageView = findViewById(R.id.image_preview_image_view);
         ProgressBar previewImageLoading = findViewById(R.id.image_preview_loading);
         ImageView previewImageDownloadFAB = findViewById(R.id.image_preview_download_fab);
 
@@ -116,5 +120,11 @@ public class ImagePreviewActivity extends BaseActivity {
             }
         } else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 }
