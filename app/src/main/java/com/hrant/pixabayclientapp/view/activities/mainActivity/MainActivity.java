@@ -35,8 +35,8 @@ public class MainActivity extends BaseActivity implements IMainView {
     private ImagesAdapter mAdapter;
     private TextView mEmptyStateTextView;
     private int mPageNo = 1;
-    private int mPagesCount;
-    private int mPageItemsCount = 45;
+    private int mCurrentItemsCount = 0;
+    private int mTotalItemsCount = 0;
     private String mSearchString = "";
 
     @Override
@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity implements IMainView {
         PixabayClientApp.getInstance().getMainComponent().inject(this);
         mPresenter.onViewCreated(this);
         initViews();
-        mPresenter.getImageList(mPageNo, mPageItemsCount, mSearchString);
+        mPresenter.getImageList(mPageNo, mCurrentItemsCount, mSearchString);
     }
 
     private void initViews() {
@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity implements IMainView {
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mPageNo = 1;
-            mPresenter.getImageList(mPageNo, mPageItemsCount, mSearchString);
+            mPresenter.getImageList(mPageNo, mCurrentItemsCount, mSearchString);
         });
         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -90,9 +90,9 @@ public class MainActivity extends BaseActivity implements IMainView {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (layoutManager.findLastCompletelyVisibleItemPosition() == mAdapter.getItemCount() - 1 && mPageNo < mPagesCount) {
+                if (layoutManager.findLastCompletelyVisibleItemPosition() == mAdapter.getItemCount() - 1 && mCurrentItemsCount < mTotalItemsCount) {
                     mPageNo++;
-                    mPresenter.getImageList(mPageNo, mPageItemsCount, mSearchString);
+                    mPresenter.getImageList(mPageNo, mCurrentItemsCount, mSearchString);
                 }
             }
         });
@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements IMainView {
                 mSwipeRefreshLayout.setRefreshing(true);
                 mSearchString = searchEditText.getText().toString().trim().replace(" ", "+");
                 mPageNo = 1;
-                mPresenter.getImageList(mPageNo, mPageItemsCount, mSearchString);
+                mPresenter.getImageList(mPageNo, mCurrentItemsCount, mSearchString);
                 return true;
             }
             return false;
@@ -134,16 +134,18 @@ public class MainActivity extends BaseActivity implements IMainView {
     @Override
     public void addToImagesList(List<PixabayImageModel> hits) {
         mAdapter.addImagesList(hits);
+        mCurrentItemsCount = mAdapter.getItemCount();
     }
 
     @Override
-    public void updateImagesList(List<PixabayImageModel> hits, int pagesCount) {
-        mPagesCount = pagesCount;
+    public void updateImagesList(List<PixabayImageModel> hits, int totalCount) {
+        mTotalItemsCount = totalCount;
         mAdapter.updateImagesList(hits);
         if (mEmptyStateTextView.getVisibility() == View.VISIBLE)
             mEmptyStateTextView.setVisibility(View.GONE);
         if (mRecyclerView.getVisibility() == View.GONE)
             mRecyclerView.setVisibility(View.VISIBLE);
+        mCurrentItemsCount = mAdapter.getItemCount();
     }
 
     @Override

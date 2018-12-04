@@ -22,26 +22,22 @@ public class MainPresenter extends BasePresenter<IMainView> {
         this.mApiClient = mApiClient;
     }
 
-    public void getImageList(int pageNo, int pageItemsCount, String searchString) {
-        mApiClient.getImagesList(pageNo, pageItemsCount, searchString, new AsyncHttpResponseHandler() {
+    public void getImageList(int pageNo, int currentItemsCount, String searchString) {
+        mApiClient.getImagesList(pageNo, searchString, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
                     String responseJsonString = new String(responseBody, "UTF-8");
                     Gson gson = new Gson();
                     PixabayResponseModel response = gson.fromJson(responseJsonString, PixabayResponseModel.class);
-                    int pagesCount;
-
-                    //Check pagesCount
-                    pagesCount = response.getTotalHits() / pageItemsCount + 1;
 
                     //Add loading item in list
-                    if (pageNo < pagesCount)
+                    if (currentItemsCount + response.getHits().size() < response.getTotalHits())
                         response.getHits().add(null);
 
                     if (pageNo == 1) {
                         if (response.getHits().size() > 0)
-                            mView.updateImagesList(response.getHits(), pagesCount);
+                            mView.updateImagesList(response.getHits(), response.getTotalHits());
                         else
                             mView.showEmptyState();
                         mView.hideLoading();
